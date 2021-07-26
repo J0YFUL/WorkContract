@@ -19,9 +19,9 @@
       
 # 필요 조건
 
-  1. 클레이튼 테스트넷 계정(https://baobab.wallet.klaytn.com/)에서 계정 생성(2개의 계정), 생성 시에 제공되는 키스토어 파일, 자신이 입력한 비밀번호, 
+  1. 클레이튼 테스트넷 계정(  https://baobab.wallet.klaytn.com/  )에서 계정 생성(2개의 계정), 생성 시에 제공되는 키스토어 파일, 자신이 입력한 비밀번호, 
      앞의 두가지 정보로 얻을 수 있는 비밀키(Private Key) 정보를 안전한 곳에 저장해둔다.
-  2. 해당 계정으로 클레이 수도꼭지(https://baobab.wallet.klaytn.com/access?next=faucet)를 통해 5 Klay를 제공받는다.
+  2. 해당 계정으로 클레이 수도꼭지(  https://baobab.wallet.klaytn.com/access?next=faucet   )  를 통해 5 Klay를 제공받는다.
   3. Node 설치 - 해당 작업물은 Node (11.15.0), npm (6.7.0) 버전 기준
 
 # 사용 방법
