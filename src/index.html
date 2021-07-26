@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="theme-color" content="#000000">
+  <title>근로계약서 프로토타입</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+    integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+    crossorigin="anonymous"></script>
+  <script src="index.js"></script>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+    integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+</head>
+
+<body>
+  <div class="container">
+    <div class="row">
+      <div class="col-md-8 col-md-offset-2">
+        <h1 class="text-center">
+          <b>근로계약 시나리오</b>
+          <button type="button" class="btn btn-info pull-right" id="login" data-toggle="modal"
+            data-target="#loginModal">
+            로그인
+          </button>
+          <button type="button" class="btn btn-info pull-right" id="logout" style="display: none;"
+            onclick="App.handleLogout()">
+            로그아웃
+          </button>
+        </h1>
+        <h3 class="text-center">
+          <code>~ 근로계약서 생성, 조회까지</code>
+        </h3>
+        <div class="text-center" id="Myaddress"></div>
+        <div class="text-center" id="transaction"></div> <!-- transaction 항목 -->
+        <hr />
+        <div id="owner" style="display: none;">
+          <button type="button" class="btn btn-info" id="creat" data-toggle="modal" data-target="#initContract">
+            계약 생성
+          </button>
+          <hr>
+        </div>
+        <div id="worker" style="display: none;">
+          <button type="button" class="btn btn-info" id="check" data-toggle="modal" data-target="#halfInfoModal">
+            계약 확인
+          </button>
+          <hr>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <br>
+
+  <div class="container">
+    <div class="col-md-8 col-md-offset-2" id="contractContent" style="display: none;">
+      <div class="text-center">
+        <hr>
+        <p><b><i>진행중인 계약서 내역</i></b></p>
+        <hr><br>
+      </div>
+      <div id="half" class="row"></div>
+
+      <div class="text-center">
+        <hr>
+        <p><b><i>완성된 계약서 내역</i></b></p>
+        <hr><br>
+      </div>
+      <div id="full"></div>
+    </div>
+  </div>
+
+  <div class="row text-center">
+    <div id="game" style="display: none;">
+      <div class="yellow-box" id="start">
+        <a href="#" onclick="App.generateNumbers()">시작</a>
+      </div>
+      <div class="yellow-box" id="question" style="display: none;">
+        <span id="num1"></span> + <span id="num2"></span> = ?
+        <div class="input-group">
+          <input type="number" class="form-control" id="answer" />
+          <span class="input-group-btn">
+            <button type="button" class="btn btn-default" onclick="App.submitAnswer()">제출</button>
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="spin"></div> <!-- spinner 항목 -->
+
+
+  <!-- 키스토어 로그인 창 -->
+  <div class="modal fade" tabindex="-1" role="dialog" id="loginModal">
+    <div class="modal-dialog modal-sm">
+      <div class="modal-content">
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="keystore">Keystore</label>
+            <input type="file" id="keystore" onchange="App.handleImport()">
+          </div>
+          <div class="form-group">
+            <label for="input-password">비밀번호</label>
+            <input type="password" class="form-control" id="input-password" onchange="App.handlePassword()">
+            <p class="help-block" id="message"></p>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">닫기</button>
+          <button type="button" class="btn btn-primary" id="submit" onclick="App.handleLogin()">제출</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+
+
+<!-- 고용주의 근로계약서 생성 창 -->
+<div class="modal fade" tabindex="-1" role="dialog" id="initContract">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-body">
+        <div class="form-group">
+          <h3 class="text-center"><b>근로계약서 - 고용주 생성 창
+              <hr>
+            </b></h3>
+          <!-- <label for="workerAddr">계약 대상 : </label> --> <!-- 근로자 ID가 ~인 계정의 지갑주소를 얻기용,이나 보내기 용-->
+          <!--<input type="text" id="workerAddr" placeholder="근로자 지갑 주소 (임시)" value="" style="width: 400px;">-->
+          <hr>
+          <p><b>필요 입력 요소</b></p>
+
+          <div class="form-group">
+            <label for="employerName">* 고용주 : </label>
+            <!-- <input type="text" id="employerName" placeholder="고용주 명" size="5" value=""> --> <br>
+          </div>
+
+          <div class="form-group">
+            <label for="startDate">* 근로개시일 : </label>
+            <input type="date" id="startDate" value=""> <br>
+          </div>
+
+          <div class="form-group">
+            <label for="workPlace">* 근무장소 : </label>
+            <!-- <input type="text" id="workPlace" placeholder="장소 (DB로 가져옴)" value=""> --> <br>
+          </div>
+
+          <div class="form-group">
+            <label for="workContent">* 업무내용 : </label>
+            <input type="text" id="workContent" placeholder="업무 내용" style="width:300px;" value=""> <br>
+          </div>
+
+          <div class="form-group">
+            <label for="workTime">* 소정근로시간 : </label>
+            <input type="time" id="workStartTime" value=""> 분 부터
+            <input type="time" id="workEndTime" value=""> 까지 <br>
+          </div>
+
+          <div class="form-group">
+            <label for="workWeek">* 근무일 : </label> 매주
+            <input type="number" id="workWeek" style="width:50px;" max="7" min="1" value="5"> 일<br> <!-- 디폴트 5일 -->
+          </div>
+
+
+          <div class="form-group">
+            <label for="salary">* 시급 : </label> <!-- 기타급여 상여금 일단 제외 -->
+            <input type="number" id="salary" placeholder="시급 ' , ' 생락" style="width: 125px; text-align: right;" min="0"
+              value=""> 원 <br>
+            <label for="salaryDay">* 급여지급일 : 매월 </label> <!-- 기타급여 상여금 일단 제외 -->
+            <input type="number" id="salaryDay" style="width:50px;" min="1" max="31" value="1"> 일 <br>
+          </div>
+
+          <hr>
+
+          <!-- <div class="form-group">
+            <label for="companyName">* 사업체명 : </label>
+            <input type="text" id="companyName" size="7" value=""> <br>
+            <label for="master">* 대표자 : </label>
+            <input type="text" id="master" size="5" value=""> <br>
+          </div>       -->
+          <hr />
+
+          <p class="help-block" id="empMessage"></p>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">닫기</button>
+        <button type="button" class="btn btn-primary" id="create" onclick="App.initContract(); return false;">생성 및
+          전달</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+
+<!-- 근로자의 계약 확인 창 -->
+<div class="modal fade highlight" tabindex="-1" role="dialog" id="halfInfoModal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <div class="modal-body">
+        <div class="form-group">
+          <h3 class="text-center"><b>근로계약서 - 근로자 확인 창
+              <hr>
+            </b></h3>
+          <strong>고용주</strong> : <span id="employerAddrW" style="font:italic bold;"></span> <br>
+          <!-- <strong>근로자</strong> : <span id="workerAddrW" class="highlighter"></span> <br> -->
+
+          <strong>근로개시일</strong> : <span id="startDateW" class="highlighter"></span> <br>
+
+          <strong>근무장소</strong> : ( DB
+          <!-- <span id="workPlaceW" class="highlighter"></span> --> ) <br>
+
+          <strong>업무내용</strong> : <span id="workContentW" class="highlighter"></span> <br>
+
+          <strong>소정근로시간</strong> :
+          ( <span id="workStartTimeW" class="highlighter"></span> ) 부터
+          ( <span id="workEndTimeW" class="highlighter"></span> ) 까지 <br>
+
+          <strong>근무일</strong> : 매주 ( <span id="workWeekW" class="highlighter"></span> ) 일<br>
+
+          <strong>시급</strong> : ( <span id="salaryW" class="highlighter"></span> )원 <br>
+
+          <strong>급여지급일</strong> : 매월 ( <span id="salaryDayW" class="highlighter"></span> ) 일 <br>
+          <hr>
+          <!-- <div class="form-group">
+            <span"workSign">* 근로자 : </span>
+            <input type="text" id="workSign" placeholder="근로자 서명 (임시)" value="" style="width:150px;">
+          </div> -->
+          <p class="help-block" id="empMessage"></p>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <!--<button type="button" class="btn btn-default" data-dismiss="modal">닫기</button> -->
+        <button type="button" class="btn btn-primary" id="create"
+          onclick="App.cancelContract(); return false;">계약취소※반려※</button>
+        <button type="button" class="btn btn-primary" id="create"
+          onclick="App.completeContract(); return false;">계약완료</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<!-- 근로계약서 완성된 양식 -->
+<div class="modal fade" tabindex="-1" role="dialog" id="fullInfoModal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="text-center"><b>근로계약서 - 최종 확인 창</b></h3>
+        <!-- <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button> -->
+      </div>
+      <div class="modal-body">
+        <strong>고용주</strong> : <span id="employerAddrC" style="font:italic bold;"></span> <br>
+        <strong>근로자</strong> : <span id="workerAddrC" style="font:italic bold;"></span> <br>
+
+        <strong>근로개시일</strong> : <span id="startDateC" class="highlighter"></span> <br>
+
+        <strong>근무장소</strong> : ( DB
+        <!-- <span id="workPlaceW" class="highlighter"></span> --> ) <br>
+
+        <strong>업무내용</strong> : <span id="workContentC" class="highlighter"></span> <br>
+
+        <strong>소정근로시간</strong> :
+        ( <span id="workStartTimeC" class="highlighter"></span> ) 부터
+        ( <span id="workEndTimeC" class="highlighter"></span> ) 까지 <br>
+
+        <strong>근무일</strong> : 매주 ( <span id="workWeekC" class="highlighter"></span> ) 일<br>
+
+        <strong>시급</strong> : ( <span id="salaryC" class="highlighter"></span> )원 <br>
+
+        <strong>급여지급일</strong> : 매월 ( <span id="salaryDayC" class="highlighter"></span> ) 일 <br>
+
+        <hr>
+        <div>
+          <div class="pull-left" style="margin-left:75px;">
+            <strong>고용주</strong> : <span id="employerC" class="highlighter"></span> (서명) <br>
+          </div>
+
+          <div class="pull-right" style="margin-right:100px;">
+            <strong>근로자</strong> : <span id="workerC" class="highlighter"></span> (서명) <br>
+          </div>
+        </div>
+        <br><br>
+        <hr>
+        <div class="text-center" style="font-weight: bold;">
+          <p>이 계약서의 내용은 블록체인에 기록됩니다.</p>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <!--<button type="button" class="btn btn-default" data-dismiss="modal">확인</button> -->
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+</body>
+
+
+</html>
+
+<style>
+  .highlighter {
+    font-weight: bold;
+    font-size: 25px;
+  }
+
+  #timer {
+    font-size: 80px;
+    color: red;
+  }
+
+  @keyframes spinner-line-fade-more {
+
+    0%,
+    100% {
+      opacity: 0;
+    }
+
+    1% {
+      opacity: 1;
+    }
+  }
+
+  @keyframes spinner-line-fade-quick {
+
+    0%,
+    39%,
+    100% {
+      opacity: 0.25;
+    }
+
+    40% {
+      opacity: 1;
+    }
+  }
+
+  @keyframes spinner-line-fade-default {
+
+    0%,
+    100% {
+      opacity: 0.22;
+    }
+
+    1% {
+      opacity: 1;
+    }
+  }
+</style>
