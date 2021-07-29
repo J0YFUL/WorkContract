@@ -63,19 +63,6 @@ const App = {
       console.log(err);
     }
     spinner.stop();
-    /* 블록이 생성 가능했던 부분
-      try {
-        WorkContract.methods.completeWorkContract(_id).send({
-          from: this.getWallet().address,
-          gas: '500000',
-        }).then(function(result) {
-          console.log(result);
-          alert("계약서가 작성되었습니다!");
-        })
-      } catch(e) {
-        console.log(e);
-      }
-    */
   },
 
   cancelContract: async function () { // 에러 고쳐야함.
